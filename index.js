@@ -12,16 +12,10 @@ const conn = mysql.createConnection({
 conn.connect((err) => {
   if (err) {
     console.log(err);
+    fs.writeFileSync(path.join(__dirname, "log.txt"), err);
     return err;
   } else {
     console.log("database ok");
-  }
-});
-
-conn.query("SELECT * FROM tasks", (err, result) => {
-  if (err) {
-    console.log(err);
-  } else {
   }
 });
 
@@ -70,6 +64,8 @@ const start = () => {
     conn.query(`SELECT * FROM tasks WHERE user_id=${userId}`, (err, result) => {
       if (err) {
         console.log(err);
+        fs.writeFileSync(path.join(__dirname, "log.txt"), err);
+        return err;
       } else {
         let toDoList = result;
 
@@ -115,6 +111,7 @@ const start = () => {
     conn.query(`SELECT * FROM tasks WHERE user_id=${chatId}`, (err, result) => {
       if (err) {
         console.log(err);
+        fs.writeFileSync(path.join(__dirname, "log.txt"), err);
       } else {
         let toDoList = result;
         if (msg.data === "showtodolist") {
