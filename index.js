@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const mysql = require("mysql");
 const conn = mysql.createConnection({
-  host: "localhost",
+  host: "127.0.0.1",
   user: "root",
   database: "glebot",
 });
