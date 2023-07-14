@@ -12,7 +12,7 @@ const conn = mysql.createConnection({
 conn.connect((err) => {
   if (err) {
     console.log(err);
-    fs.writeFileSync(path.join(__dirname, "log.txt"), err);
+    fs.writeFileSync(path.join(__dirname, "log.txt"), JSON.stringify(err));
     return err;
   } else {
     console.log("database ok");
@@ -64,7 +64,7 @@ const start = () => {
     conn.query(`SELECT * FROM tasks WHERE user_id=${userId}`, (err, result) => {
       if (err) {
         console.log(err);
-        fs.writeFileSync(path.join(__dirname, "log.txt"), err);
+        fs.writeFileSync(path.join(__dirname, "log.txt"), JSON.stringify(err));
         return err;
       } else {
         let toDoList = result;
@@ -79,6 +79,11 @@ const start = () => {
             (err, result) => {
               if (err) {
                 console.log(err);
+                fs.writeFileSync(
+                  path.join(__dirname, "log.txt"),
+                  JSON.stringify(err)
+                );
+                return err;
               } else {
                 mode = "default";
                 return bot.sendMessage(
@@ -111,7 +116,7 @@ const start = () => {
     conn.query(`SELECT * FROM tasks WHERE user_id=${chatId}`, (err, result) => {
       if (err) {
         console.log(err);
-        fs.writeFileSync(path.join(__dirname, "log.txt"), err);
+        fs.writeFileSync(path.join(__dirname, "log.txt"), JSON.stringify(err));
       } else {
         let toDoList = result;
         if (msg.data === "showtodolist") {
