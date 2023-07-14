@@ -1,14 +1,18 @@
-const token = "6392743881:AAGGo404yaYPMRNYJyPfuE27SjiYxWvU-RM";
-const TelegramApi = require("node-telegram-bot-api");
-const bot = new TelegramApi(token, { polling: true });
+require('dotenv').config()
+
 const fs = require("fs");
-const path = require("path");
 const mariadb = require("mariadb");
+const path = require("path");
+const TelegramApi = require("node-telegram-bot-api");
+
+const bot = new TelegramApi(process.env.TG_TOKEN, { polling: true });
+
 try {
   const conn = mariadb.createConnection({
-    host: "127.0.0.1",
-    user: "root",
-    database: "glebot",
+    database: process.env.DB_DATABASE,
+    host: process.env.DB_HOST,
+    password: process.env.DB_PASSWORD,
+    user: process.env.DB_USER,
   });
   conn.connect((err) => {
     if (err) {
