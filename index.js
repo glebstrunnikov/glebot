@@ -3,7 +3,7 @@ const TelegramApi = require("node-telegram-bot-api");
 const bot = new TelegramApi(token, { polling: true });
 const fs = require("fs");
 const path = require("path");
-const mysql = require("mysql");
+const mariadb = require("mariadb");
 const conn = mysql.createConnection({
   host: "127.0.0.1",
   user: "root",
