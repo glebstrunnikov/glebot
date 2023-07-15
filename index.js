@@ -22,7 +22,7 @@ async function asyncConnection() {
   });
 
   try {
-    const res = await conn.query("DESCRIBE tasks");
+    const res = await conn.query("DESCRIBE tasks;");
     console.log(res);
     fs.appendFileSync(path.join(__dirname, "log.txt"), JSON.stringify(res));
     return res;
