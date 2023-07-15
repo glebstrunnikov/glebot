@@ -13,7 +13,11 @@ const bot = new TelegramApi(token, { polling: true });
 fs.appendFileSync(path.join(__dirname, "log.txt"), "program init \n");
 
 async function asyncConnection() {
-  fs.appendFileSync(path.join(__dirname, "log.txt"), "connection started \n");
+  fs.appendFileSync(
+    path.join(__dirname, "log.txt"),
+    "connection attempt started \n"
+  );
+
   const conn = await mariadb.createConnection({
     host: host,
     user: user,
@@ -22,7 +26,9 @@ async function asyncConnection() {
   });
 
   try {
+    fs.appendFileSync(path.join(__dirname, "log.txt"), "sending query \n");
     const res = await conn.query("DESCRIBE tasks;");
+    fs.appendFileSync(path.join(__dirname, "log.txt"), "query sent \n");
     console.log(res);
     fs.appendFileSync(
       path.join(__dirname, "log.txt"),
