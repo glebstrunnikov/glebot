@@ -24,7 +24,10 @@ async function asyncConnection() {
   try {
     const res = await conn.query("DESCRIBE tasks;");
     console.log(res);
-    fs.appendFileSync(path.join(__dirname, "log.txt"), JSON.stringify(res));
+    fs.appendFileSync(
+      path.join(__dirname, "log.txt"),
+      `response: ${JSON.stringify(res)} \n`
+    );
     return res;
   } catch (error) {
     fs.appendFileSync(path.join(__dirname, "log.txt"), JSON.stringify(error));
