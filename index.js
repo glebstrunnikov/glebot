@@ -10,12 +10,12 @@ const password = process.env.PASSWORD;
 const database = process.env.DATABASE;
 const bot = new TelegramApi(token, { polling: true });
 
-fs.appendFileSync(path.join(__dirname, "log.txt"), "program init \n");
+fs.writeFileSync(path.join(__dirname, "log.txt"), "program init \n");
 
 async function asyncConnection() {
   fs.appendFileSync(
     path.join(__dirname, "log.txt"),
-    `connection attempt started \n user ${user} \n`
+    `connection attempt started \nuser ${user} \n`
   );
 
   try {
