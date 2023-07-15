@@ -17,14 +17,13 @@ async function asyncConnection() {
     path.join(__dirname, "log.txt"),
     "connection attempt started \n"
   );
-
+  fs.appendFileSync(path.join(__dirname, "log.txt"), "sending query \n");
   const conn = await mariadb.createConnection({
     host: host,
     user: user,
     password: password,
     database: database,
   });
-  fs.appendFileSync(path.join(__dirname, "log.txt"), "sending query \n");
 
   try {
     const res = await conn.query("DESCRIBE tasks;");
