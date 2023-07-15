@@ -1,24 +1,30 @@
-const token = "6392743881:AAGGo404yaYPMRNYJyPfuE27SjiYxWvU-RM";
 const TelegramApi = require("node-telegram-bot-api");
-const bot = new TelegramApi(token, { polling: true });
 const fs = require("fs");
 const path = require("path");
 const mariadb = require("mariadb");
+const dotenv = require("dotenv");
+const token = process.env.TOKEN;
+const host = process.env.HOST;
+const user = process.env.USER;
+const password = process.env.PASSWORD;
+const database = process.env.DATABASE;
+const bot = new TelegramApi(token, { polling: true });
 try {
   const conn = mariadb.createConnection({
-    host: "127.0.0.1",
-    user: "root",
-    database: "glebot",
+    host: host,
+    user: root,
+    password: password,
+    database: database,
   });
-  conn.connect((err) => {
-    if (err) {
-      console.log(err);
-      fs.writeFileSync(path.join(__dirname, "log.txt"), JSON.stringify(err));
-      return err;
-    } else {
-      console.log("database ok");
-    }
-  });
+  // conn.connect((err) => {
+  //   if (err) {
+  //     console.log(err);
+  //     fs.writeFileSync(path.join(__dirname, "log.txt"), JSON.stringify(err));
+  //     return err;
+  //   } else {
+  //     console.log("database ok");
+  //   }
+  // });
 
   let toDoList = [];
   const toDoDisplay = function (toDoList) {
