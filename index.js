@@ -38,6 +38,7 @@ async function asyncConnection() {
   } catch (error) {
     fs.appendFileSync(path.join(__dirname, "log.txt"), JSON.stringify(error));
   } finally {
+    fs.appendFileSync(path.join(__dirname, "log.txt"), "connection ended \n");
     conn.end();
   }
 }
