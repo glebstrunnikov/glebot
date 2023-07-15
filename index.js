@@ -15,14 +15,14 @@ fs.appendFileSync(path.join(__dirname, "log.txt"), "program init \n");
 async function asyncConnection() {
   fs.appendFileSync(
     path.join(__dirname, "log.txt"),
-    "connection attempt started \n"
+    `connection attempt started \n user ${user} \n`
   );
 
   try {
     const conn = await mariadb.createConnection({
       host: host,
       user: user,
-      password: password,
+      // password: password,
       database: database,
     });
 
