@@ -1,0 +1,25 @@
+version: '3.1'
+
+services:
+  bot:
+    container_name: ${COMPOSE_PROJECT_NAME}_bot
+    image: node:18-alpine
+    working_dir: "/opt/app"
+    command: "npm run start"
+    restart: unless-stopped
+    volumes:
+      - ./:/opt/app
+  db:
+    image: mariadb:10.3
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${DB_DATABASE:-glebot}
+      MARIADB_PASSWORD: ${DB_PASSWORD:-glebot_password}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-123456aA1!}
+      MARIADB_USER: ${DB_USER:-glebot}
+    ports:
+      - ${DB_PORT:-3306}:3306
+    volumes:
+      - db:/var/lib/mysql
+volumes:
+  db:
