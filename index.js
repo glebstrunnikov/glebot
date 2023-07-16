@@ -1,9 +1,8 @@
+require("dotenv").config();
 const TelegramApi = require("node-telegram-bot-api");
 const fs = require("fs");
 const path = require("path");
 const mariadb = require("mariadb");
-const dotenv = require("dotenv");
-dotenv.config();
 const db_token = process.env.TOKEN;
 const db_host = process.env.HOST;
 const db_user = process.env.USER;
