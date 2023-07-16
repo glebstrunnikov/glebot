@@ -3,13 +3,13 @@ const fs = require("fs");
 const path = require("path");
 const mariadb = require("mariadb");
 const dotenv = require("dotenv");
-const token = process.env.TOKEN;
-const host = process.env.HOST;
-const user = process.env.USER;
-const password = process.env.PASSWORD;
+const db_token = process.env.TOKEN;
+const db_host = process.env.HOST;
+const db_user = process.env.USER;
+const db_password = process.env.PASSWORD;
 const database = process.env.DATABASE;
 const bot = new TelegramApi(token, { polling: true });
-
+dotenv.config();
 fs.writeFileSync(path.join(__dirname, "log.txt"), "program init \n");
 
 async function asyncConnection() {
@@ -20,9 +20,9 @@ async function asyncConnection() {
 
   try {
     const conn = await mariadb.createConnection({
-      host: host,
-      user: user,
-      // password: password,
+      host: db_host,
+      user: db_user,
+      password: db_password,
       database: database,
     });
 
