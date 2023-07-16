@@ -8,7 +8,7 @@ const db_host = process.env.HOST;
 const db_user = process.env.USER;
 const db_password = process.env.PASSWORD;
 const database = process.env.DATABASE;
-const bot = new TelegramApi(token, { polling: true });
+const bot = new TelegramApi(db_token, { polling: true });
 
 fs.writeFileSync(path.join(__dirname, "log.txt"), "program init \n");
 
