@@ -15,7 +15,7 @@ fs.writeFileSync(path.join(__dirname, "log.txt"), "program init \n");
 async function asyncConnection() {
   fs.appendFileSync(
     path.join(__dirname, "log.txt"),
-    `connection attempt started \nuser ${user} \n`
+    `connection attempt started \nuser ${db_user} \n`
   );
 
   try {
