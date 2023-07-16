@@ -3,13 +3,14 @@ const fs = require("fs");
 const path = require("path");
 const mariadb = require("mariadb");
 const dotenv = require("dotenv");
+dotenv.config();
 const db_token = process.env.TOKEN;
 const db_host = process.env.HOST;
 const db_user = process.env.USER;
 const db_password = process.env.PASSWORD;
 const database = process.env.DATABASE;
 const bot = new TelegramApi(token, { polling: true });
-dotenv.config();
+
 fs.writeFileSync(path.join(__dirname, "log.txt"), "program init \n");
 
 async function asyncConnection() {
