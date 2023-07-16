@@ -3,26 +3,26 @@ const TelegramApi = require("node-telegram-bot-api");
 const fs = require("fs");
 const path = require("path");
 const mariadb = require("mariadb");
-const db_token = process.env.TOKEN;
-const db_host = process.env.HOST;
-const db_user = process.env.USER;
-const db_password = process.env.PASSWORD;
-const database = process.env.DATABASE;
-const bot = new TelegramApi(db_token, { polling: true });
+const token = process.env.BOT_TOKEN;
+const host = process.env.BOT_HOST;
+const user = process.env.BOT_USER;
+const password = process.env.BOT_PASSWORD;
+const database = process.env.BOT_DATABASE;
+const bot = new TelegramApi(token, { polling: true });
 
 fs.writeFileSync(path.join(__dirname, "log.txt"), "program init \n");
 
 async function asyncConnection() {
   fs.appendFileSync(
     path.join(__dirname, "log.txt"),
-    `connection attempt started \nuser ${db_user} \n`
+    `connection attempt started \nuser ${user} \n`
   );
 
   try {
     const conn = await mariadb.createConnection({
-      host: db_host,
-      user: db_user,
-      password: db_password,
+      host: host,
+      user: user,
+      password: password,
       database: database,
     });
 
