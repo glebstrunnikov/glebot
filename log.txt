@@ -1,0 +1,6 @@
+program init 
+connection attempt started 
+user glebot 
+sending query 
+query sent 
+response: [{"Field":"id","Type":"int(11)","Null":"NO","Key":"PRI","Default":null,"Extra":"auto_increment"},{"Field":"user_id","Type":"int(11)","Null":"YES","Key":"","Default":null,"Extra":""},{"Field":"text","Type":"varchar(1024)","Null":"YES","Key":"","Default":null,"Extra":""}] 
