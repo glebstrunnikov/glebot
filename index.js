@@ -94,7 +94,11 @@ async function asyncConnection() {
       }
 
       if (mode === "toDoDeletingItem") {
-        if (Number(text) <= toDoList.length && Number(text) > 0) {
+        if (
+          Number(text) <= toDoList.length &&
+          Number(text) > 0 &&
+          Number(text) === Math.floor(Number(text))
+        ) {
           const toDoToDelete = toDoList[text - 1];
           conn.query(`DELETE FROM tasks WHERE id='${toDoToDelete.id}'`);
           mode = "default";
@@ -108,7 +112,7 @@ async function asyncConnection() {
           return bot.sendMessage(
             chat,
             `Так не пойдет, пришлите число больше 0 и меньше ${
-              toDoList.length
+              toDoList.length + 1
             }\n\n${toDoDisplay(toDoList)}`
           );
         }
