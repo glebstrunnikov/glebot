@@ -9,6 +9,8 @@ const user = process.env.BOT_USER;
 const password = process.env.BOT_PASSWORD;
 const database = process.env.BOT_DATABASE;
 const bot = new TelegramApi(token, { polling: true });
+const on_message = require("./modules/on_message.js");
+const on_callback_query = require("./modules/on_callback_query.js");
 
 fs.writeFileSync(path.join(__dirname, "log.txt"), "program init \n");
 
@@ -48,7 +50,6 @@ async function asyncConnection() {
       return toDoDisplay;
     };
 
-    let toDoListState;
     const toDoBtns = {
       reply_markup: JSON.stringify({
         inline_keyboard: [
@@ -71,85 +72,18 @@ async function asyncConnection() {
     let mode = "default";
 
     bot.on("message", async (msg) => {
-      const text = msg.text;
-      const chat = msg.chat.id;
-      const userId = msg.chat.id;
-
-      let toDoList = await conn.query(
-        `SELECT * FROM tasks WHERE user_id=${userId}`
-      );
-
-      if (text === "/start") {
-        return bot.sendMessage(chat, "Privet", toDoBtns);
-      } else if (mode === "toDoAddingItem") {
-        toDoList.push({ text: text });
-        conn.query(
-          `INSERT INTO tasks (user_id, text) VALUES('${userId}', '${text}')`
-        );
-        return bot.sendMessage(
-          chat,
-          `Кайф, новый список дел:\n\n${toDoDisplay(toDoList)}`,
-          toDoBtns
-        );
-      }
-
-      if (mode === "toDoDeletingItem") {
-        if (
-          Number(text) <= toDoList.length &&
-          Number(text) > 0 &&
-          Number(text) === Math.floor(Number(text))
-        ) {
-          const toDoToDelete = toDoList[text - 1];
-          conn.query(`DELETE FROM tasks WHERE id='${toDoToDelete.id}'`);
-          mode = "default";
-          toDoList.splice(text - 1, 1);
-          return bot.sendMessage(
-            chat,
-            `Кайф, новый список дел:\n\n${toDoDisplay(toDoList)}`,
-            toDoBtns
-          );
-        } else {
-          return bot.sendMessage(
-            chat,
-            `Так не пойдет, пришлите число больше 0 и меньше ${
-              toDoList.length + 1
-            }\n\n${toDoDisplay(toDoList)}`
-          );
-        }
-      } else return bot.sendMessage(chat, "Не понял");
+      mode = await on_message(msg, bot, conn, mode, toDoBtns, toDoDisplay);
     });
 
     bot.on("callback_query", async (msg) => {
-      const chatId = msg.message.chat.id;
-      let toDoList = await conn.query(
-        `SELECT * FROM tasks WHERE user_id=${chatId}`
+      mode = await on_callback_query(
+        msg,
+        conn,
+        mode,
+        bot,
+        toDoDisplay,
+        toDoBtns
       );
-
-      if (msg.data === "showtodolist") {
-        mode = "default";
-        return bot.sendMessage(chatId, toDoDisplay(toDoList), toDoBtns);
-      }
-
-      if (msg.data === "addtodoitem") {
-        mode = "toDoAddingItem";
-        return bot.sendMessage(chatId, "Итак, дело:");
-      }
-
-      if (msg.data === "deletetodoitem" && toDoList.length > 0) {
-        mode = "toDoDeletingItem";
-
-        return bot.sendMessage(
-          chatId,
-          "Дело под каким номером вы хотите удалить? Пришлите число"
-        );
-      }
-
-      if (msg.data === "deletetodoitem" && toDoList.length === 0) {
-        return bot.sendMessage(
-          chatId,
-          "Дел в списке нет, что ты удалять собрался?"
-        );
-      }
     });
   } catch (error) {
     fs.appendFileSync(path.join(__dirname, "log.txt"), JSON.stringify(error));
