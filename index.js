@@ -17,11 +17,6 @@ const on_location = require("./modules/on_location.js");
 fs.writeFileSync(path.join(__dirname, "log.txt"), "program init \n");
 
 async function asyncConnection() {
-  fs.appendFileSync(
-    path.join(__dirname, "log.txt"),
-    `connection attempt started \nuser ${user} \n`
-  );
-
   try {
     const conn = await mariadb.createConnection({
       host: host,
@@ -29,15 +24,6 @@ async function asyncConnection() {
       password: password,
       database: database,
     });
-
-    fs.appendFileSync(path.join(__dirname, "log.txt"), "sending query \n");
-    const res = await conn.query("DESCRIBE tasks;");
-    fs.appendFileSync(path.join(__dirname, "log.txt"), "query sent \n");
-    // console.log(res);
-    fs.appendFileSync(
-      path.join(__dirname, "log.txt"),
-      `response: ${JSON.stringify(res)} \n`
-    );
 
     const toDoDisplay = function (list) {
       let toDoDisplay;
