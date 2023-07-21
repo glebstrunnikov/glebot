@@ -12,6 +12,7 @@
   "dependencies": {
     "dotenv": "^16.3.1",
     "mariadb": "^3.2.0",
+    "node-fetch": "^2.6.12",
     "node-telegram-bot-api": "^0.61.0",
     "nodemon": "^3.0.1"
   },
