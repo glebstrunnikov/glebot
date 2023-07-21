@@ -134,7 +134,7 @@ async function asyncConnection() {
       })\n\nВ ближайшие сутки: от ${Math.floor(tomorrowTempMin * 10) / 10} до ${
         Math.floor(tomorrowTempMax * 10) / 10
       }, ${listOfWeatherConditions.join(", ")}`;
-      bot.sendMessage(msg.chat.id, weatherReport);
+      bot.sendMessage(msg.chat.id, weatherReport, toDoBtns);
     });
   } catch (error) {
     fs.appendFileSync(path.join(__dirname, "log.txt"), JSON.stringify(error));
