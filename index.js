@@ -29,32 +29,6 @@ const configuration = new Configuration({
   apiKey: chatGPTKey,
 });
 const openai = new OpenAIApi(configuration);
-// const response = await openai.listEngines();
-
-// async function runCompletion() {
-//   const completion = await openai.createCompletion({
-//     model: "text-davinci-003",
-//     prompt: "How are you today?",
-//     max_tokens: 4000,
-//   });
-//   console.log(completion.data.choices[0].text);
-// }
-// runCompletion();
-
-// const chatCompletion = await openai.createChatCompletion({
-//   model: "gpt-3.5-turbo",
-//   messages: [{ role: "user", content: "Hello world" }],
-// });
-
-// console.log(chatCompletion.data.choices[0].message);
-// console.log(path.join(__dirname, "log.txt"));
-
-// fs.writeFileSync(path.join(__dirname, "log.txt"), "program init \n");
-
-// fs.writeFileSync(
-//   path.join(__dirname, "log.txt"),
-//   JSON.stringify(chatCompletion.data.choices[0].message)
-// );
 
 async function asyncConnection() {
   try {
@@ -88,15 +62,6 @@ async function asyncConnection() {
         ],
       }),
     };
-
-    bot.setMyCommands([
-      { command: "/showtodolist", description: "Показать список дел" },
-      { command: "/addtodoitem", description: "Добавить дело" },
-      {
-        command: "/deletetodoitem",
-        description: "Дело сделано или больше не актуально",
-      },
-    ]);
 
     let mode = "default";
 
