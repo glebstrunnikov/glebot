@@ -20,6 +20,7 @@ const onMessage = async (
 
   if (text === "/start") {
     bot.sendMessage(chat, "Privet", toDoBtns);
+    mode[chat] = "default";
     return mode;
   }
   if (mode[chat] === "toDoAddingItem") {

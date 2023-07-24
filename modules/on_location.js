@@ -1,13 +1,15 @@
 import fetch from "node-fetch";
 
 const onLocation = async (msg, weatherApiKey, bot, toDoBtns) => {
-  let currentWeather = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?lat=${msg.location.latitude}&lon=${msg.location.longitude}&appid=${weatherApiKey}&units=metric&lang=ru`
-  );
+  async function getWeather(api, cnt) {
+    return await fetch(
+      `https://api.openweathermap.org/data/2.5/${api}?lat=${msg.location.latitude}&lon=${msg.location.longitude}&appid=${weatherApiKey}&units=metric${cnt}&lang=ru`
+    );
+  }
+
+  let currentWeather = await getWeather("weather", "");
+  let tomorrowWeather = await getWeather("forecast", "&cnt=8");
   currentWeather = await currentWeather.json();
-  let tomorrowWeather = await fetch(
-    `https://api.openweathermap.org/data/2.5/forecast?lat=${msg.location.latitude}&lon=${msg.location.longitude}&appid=${weatherApiKey}&units=metric&cnt=8&lang=ru`
-  );
   tomorrowWeather = await tomorrowWeather.json();
 
   let listOfWeatherConditions = [];
@@ -35,8 +37,6 @@ const onLocation = async (msg, weatherApiKey, bot, toDoBtns) => {
       tomorrowTempMin = threeHourlyForecast.main.temp;
     }
   });
-  console.log(listOfWeatherConditions);
-  console.log("max: " + tomorrowTempMax + ", min: " + tomorrowTempMin);
   const weatherReport = `Температура сейчас: ${
     Math.floor(currentWeather.main.temp * 10) / 10
   }, ${currentWeather.weather[0].description} (ощущается как ${
