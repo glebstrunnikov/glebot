@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 
-const on_location = async (msg, weatherApiKey, bot, toDoBtns) => {
+const onLocation = async (msg, weatherApiKey, bot, toDoBtns) => {
   let currentWeather = await fetch(
     `https://api.openweathermap.org/data/2.5/weather?lat=${msg.location.latitude}&lon=${msg.location.longitude}&appid=${weatherApiKey}&units=metric&lang=ru`
   );
@@ -47,4 +47,4 @@ const on_location = async (msg, weatherApiKey, bot, toDoBtns) => {
   bot.sendMessage(msg.chat.id, weatherReport, toDoBtns);
 };
 
-export default on_location;
+export default onLocation;

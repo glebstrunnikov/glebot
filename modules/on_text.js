@@ -1,17 +1,18 @@
-import { Configuration, OpenAIApi } from "openai";
-
-const on_message = async (
+const onMessage = async (
   msg,
   bot,
   conn,
   mode,
   toDoBtns,
-  toDoDisplay,
+  displayToDos,
   openai
 ) => {
   const text = msg.text;
   const chat = msg.chat.id;
   const userId = msg.chat.id;
+  if (!mode[chat]) {
+    mode[chat] = "default";
+  }
 
   let toDoList = await conn.query(
     `SELECT * FROM tasks WHERE user_id=${userId}`
@@ -20,20 +21,21 @@ const on_message = async (
   if (text === "/start") {
     bot.sendMessage(chat, "Privet", toDoBtns);
     return mode;
-  } else if (mode === "toDoAddingItem") {
+  }
+  if (mode[chat] === "toDoAddingItem") {
     toDoList.push({ text: text });
     conn.query(
       `INSERT INTO tasks (user_id, text) VALUES('${userId}', '${text}')`
     );
     bot.sendMessage(
       chat,
-      `Кайф, новый список дел:\n\n${toDoDisplay(toDoList)}`,
+      `Кайф, новый список дел:\n\n${displayToDos(toDoList)}`,
       toDoBtns
     );
     return mode;
   }
 
-  if (mode === "toDoDeletingItem") {
+  if (mode[chat] === "toDoDeletingItem") {
     if (
       Number(text) <= toDoList.length &&
       Number(text) > 0 &&
@@ -41,11 +43,11 @@ const on_message = async (
     ) {
       const toDoToDelete = toDoList[text - 1];
       conn.query(`DELETE FROM tasks WHERE id='${toDoToDelete.id}'`);
-      mode = "default";
+      mode[chat] = "default";
       toDoList.splice(text - 1, 1);
       bot.sendMessage(
         chat,
-        `Кайф, новый список дел:\n\n${toDoDisplay(toDoList)}`,
+        `Кайф, новый список дел:\n\n${displayToDos(toDoList)}`,
         toDoBtns
       );
       return mode;
@@ -54,19 +56,19 @@ const on_message = async (
         chat,
         `Так не пойдет, пришлите число больше 0 и меньше ${
           toDoList.length + 1
-        }\n\n${toDoDisplay(toDoList)}`
+        }\n\n${displayToDos(toDoList)}`
       );
       return mode;
     }
   }
-  if (mode === "writeChatGpt") {
+  if (mode[chat] === "writeChatGpt") {
     if (text.trim() === "/exit") {
       bot.sendMessage(
         chat,
         "Окей, вы больше не разговариваете с ChatGPT",
         toDoBtns
       );
-      mode = "default";
+      mode[chat] = "default";
       return mode;
     } else {
       const chatCompletion = await openai.createChatCompletion({
@@ -79,10 +81,9 @@ const on_message = async (
       );
       return mode;
     }
-  } else {
-    bot.sendMessage(chat, "Не понял");
-    return mode;
   }
+  bot.sendMessage(chat, "Не понял");
+  return mode;
 };
 
-export default on_message;
+export default onMessage;

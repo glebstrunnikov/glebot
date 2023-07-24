@@ -17,5 +17,8 @@
     "nodemon": "^3.0.1",
     "openai": "^3.3.0"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "eslint": "^8.45.0"
+  }
 }
