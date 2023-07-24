@@ -18,9 +18,43 @@ const user = process.env.BOT_USER;
 const password = process.env.BOT_PASSWORD;
 const database = process.env.BOT_DATABASE;
 const weatherApiKey = process.env.WEATHER_API_KEY;
+const chatGPTKey = process.env.CHATGPT_KEY;
+const chatGPTOrg = process.env.CHATGPT_ORGANIZATION;
+
 const bot = new TelegramApi(token, { polling: true });
 
-fs.writeFileSync(path.join(__dirname, "log.txt"), "program init \n");
+import { Configuration, OpenAIApi } from "openai";
+const configuration = new Configuration({
+  organization: chatGPTOrg,
+  apiKey: chatGPTKey,
+});
+const openai = new OpenAIApi(configuration);
+// const response = await openai.listEngines();
+
+// async function runCompletion() {
+//   const completion = await openai.createCompletion({
+//     model: "text-davinci-003",
+//     prompt: "How are you today?",
+//     max_tokens: 4000,
+//   });
+//   console.log(completion.data.choices[0].text);
+// }
+// runCompletion();
+
+// const chatCompletion = await openai.createChatCompletion({
+//   model: "gpt-3.5-turbo",
+//   messages: [{ role: "user", content: "Hello world" }],
+// });
+
+// console.log(chatCompletion.data.choices[0].message);
+// console.log(path.join(__dirname, "log.txt"));
+
+// fs.writeFileSync(path.join(__dirname, "log.txt"), "program init \n");
+
+// fs.writeFileSync(
+//   path.join(__dirname, "log.txt"),
+//   JSON.stringify(chatCompletion.data.choices[0].message)
+// );
 
 async function asyncConnection() {
   try {
@@ -50,6 +84,7 @@ async function asyncConnection() {
           [{ text: "Показать список дел", callback_data: "showtodolist" }],
           [{ text: "Добавить дело", callback_data: "addtodoitem" }],
           [{ text: "Удалить дело", callback_data: "deletetodoitem" }],
+          [{ text: "Написать ChatGPT", callback_data: "writechatgpt" }],
         ],
       }),
     };
@@ -66,7 +101,7 @@ async function asyncConnection() {
     let mode = "default";
 
     bot.on("text", async (msg) => {
-      mode = await on_text(msg, bot, conn, mode, toDoBtns, toDoDisplay);
+      mode = await on_text(msg, bot, conn, mode, toDoBtns, toDoDisplay, openai);
     });
 
     bot.on("callback_query", async (msg) => {

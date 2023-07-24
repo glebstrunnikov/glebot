@@ -1,4 +1,14 @@
-const on_message = async (msg, bot, conn, mode, toDoBtns, toDoDisplay) => {
+import { Configuration, OpenAIApi } from "openai";
+
+const on_message = async (
+  msg,
+  bot,
+  conn,
+  mode,
+  toDoBtns,
+  toDoDisplay,
+  openai
+) => {
   const text = msg.text;
   const chat = msg.chat.id;
   const userId = msg.chat.id;
@@ -45,6 +55,27 @@ const on_message = async (msg, bot, conn, mode, toDoBtns, toDoDisplay) => {
         `Так не пойдет, пришлите число больше 0 и меньше ${
           toDoList.length + 1
         }\n\n${toDoDisplay(toDoList)}`
+      );
+      return mode;
+    }
+  }
+  if (mode === "writeChatGpt") {
+    if (text.trim() === "/exit") {
+      bot.sendMessage(
+        chat,
+        "Окей, вы больше не разговариваете с ChatGPT",
+        toDoBtns
+      );
+      mode = "default";
+      return mode;
+    } else {
+      const chatCompletion = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: text }],
+      });
+      await bot.sendMessage(
+        chat,
+        chatCompletion.data.choices[0].message.content
       );
       return mode;
     }

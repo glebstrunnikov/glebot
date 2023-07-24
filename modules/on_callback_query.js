@@ -37,6 +37,15 @@ const on_callback_query = async (
     bot.sendMessage(chatId, "Дел в списке нет, что ты удалять собрался?");
     return mode;
   }
+
+  if (msg.data === "writechatgpt") {
+    bot.sendMessage(
+      chatId,
+      "Хорошо, напишите, о чем бы вы хотели спросить, я передам \n\nЧтобы выйти из режима диалога с ChatGPT, напишите /exit"
+    );
+    mode = "writeChatGpt";
+    return mode;
+  }
 };
 
 export default on_callback_query;
