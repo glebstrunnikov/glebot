@@ -39,4 +39,4 @@ const on_callback_query = async (
   }
 };
 
-module.exports = on_callback_query;
+export default on_callback_query;

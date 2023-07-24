@@ -16,5 +16,5 @@
     "node-telegram-bot-api": "^0.61.0",
     "nodemon": "^3.0.1"
   },
-  "type": "commonjs"
+  "type": "module"
 }

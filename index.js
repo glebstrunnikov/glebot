@@ -1,8 +1,17 @@
-require("dotenv").config();
-const TelegramApi = require("node-telegram-bot-api");
-const fs = require("fs");
-const path = require("path");
-const mariadb = require("mariadb");
+import dotenv from "dotenv";
+dotenv.config();
+import TelegramApi from "node-telegram-bot-api";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+import mariadb from "mariadb";
+
+import on_text from "./modules/on_text.js";
+import on_callback_query from "./modules/on_callback_query.js";
+import on_location from "./modules/on_location.js";
+
 const token = process.env.BOT_TOKEN;
 const host = process.env.BOT_HOST;
 const user = process.env.BOT_USER;
@@ -10,9 +19,6 @@ const password = process.env.BOT_PASSWORD;
 const database = process.env.BOT_DATABASE;
 const weatherApiKey = process.env.WEATHER_API_KEY;
 const bot = new TelegramApi(token, { polling: true });
-const on_text = require("./modules/on_text.js");
-const on_callback_query = require("./modules/on_callback_query.js");
-const on_location = require("./modules/on_location.js");
 
 fs.writeFileSync(path.join(__dirname, "log.txt"), "program init \n");
 

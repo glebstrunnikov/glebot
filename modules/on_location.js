@@ -1,4 +1,4 @@
-const fetch = require("node-fetch");
+import fetch from "node-fetch";
 
 const on_location = async (msg, weatherApiKey, bot, toDoBtns) => {
   let currentWeather = await fetch(
@@ -47,4 +47,4 @@ const on_location = async (msg, weatherApiKey, bot, toDoBtns) => {
   bot.sendMessage(msg.chat.id, weatherReport, toDoBtns);
 };
 
-module.exports = on_location;
+export default on_location;

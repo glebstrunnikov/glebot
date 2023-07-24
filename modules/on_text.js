@@ -54,4 +54,4 @@ const on_message = async (msg, bot, conn, mode, toDoBtns, toDoDisplay) => {
   }
 };
 
-module.exports = on_message;
+export default on_message;
