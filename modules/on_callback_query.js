@@ -31,7 +31,7 @@ const onCallbackQuery = async (
 
     bot.sendMessage(
       chatId,
-      "Дело под каким номером вы хотите удалить? Пришлите число"
+      "Дело под каким номером ты хочешь удалить? Пришли число"
     );
   }
 
@@ -39,10 +39,23 @@ const onCallbackQuery = async (
     bot.sendMessage(chatId, "Дел в списке нет, что ты удалять собрался?");
   }
 
+  if (msg.data === "edittodoitem" && toDoList.length > 0) {
+    mode[chatId] = "toDoEditingItem";
+
+    bot.sendMessage(
+      chatId,
+      "Пришли номер дела и, через пробел, его новую редакцию"
+    );
+  }
+
+  if (msg.data === "edittodoitem" && toDoList.length === 0) {
+    bot.sendMessage(chatId, "Дел в списке нет, что ты редактировать собрался?");
+  }
+
   if (msg.data === "writechatgpt") {
     bot.sendMessage(
       chatId,
-      "Хорошо, напишите, о чем бы вы хотели спросить, я передам \n\nЧтобы выйти из режима диалога с ChatGPT, напишите /exit"
+      "Хорошо, напиши, о чем бы ты хотел спросить, я передам \n\nЧтобы выйти из режима диалога с ChatGPT, напиши /exit"
     );
     mode[chatId] = "writeChatGpt";
   }

@@ -45,8 +45,12 @@ async function asyncConnection() {
       reply_markup: JSON.stringify({
         inline_keyboard: [
           [{ text: "Показать список дел", callback_data: "showtodolist" }],
-          [{ text: "Добавить дело", callback_data: "addtodoitem" }],
-          [{ text: "Удалить дело", callback_data: "deletetodoitem" }],
+          [
+            { text: "➕", callback_data: "addtodoitem" },
+            { text: "✏️", callback_data: "edittodoitem" },
+            { text: "❌", callback_data: "deletetodoitem" },
+            // { text: "✅", callback_data: "crossouttodoitem" }, to be added...
+          ],
           [{ text: "Написать ChatGPT", callback_data: "writechatgpt" }],
         ],
       }),

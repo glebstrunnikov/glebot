@@ -1,12 +1,4 @@
-const onMessage = async (
-  msg,
-  bot,
-  conn,
-  mode,
-  toDoBtns,
-  displayToDos,
-  openai
-) => {
+const onText = async (msg, bot, conn, mode, toDoBtns, displayToDos, openai) => {
   const text = msg.text;
   const chat = msg.chat.id;
   const userId = msg.chat.id;
@@ -55,18 +47,55 @@ const onMessage = async (
     } else {
       bot.sendMessage(
         chat,
-        `Так не пойдет, пришлите число больше 0 и меньше ${
+        `Так не пойдет, пришли число больше 0 и меньше ${
           toDoList.length + 1
         }\n\n${displayToDos(toDoList)}`
       );
       return mode;
     }
   }
+
+  if (mode[chat] === "toDoEditingItem") {
+    if (!/^\d+\s.+$/.test(text)) {
+      bot.sendMessage(
+        chat,
+        "Ты что-то напутал с форматом. Пришли номер дела, пробел и новую редакцию"
+      );
+      return mode;
+    }
+    const editText = text.replaceAll(/^.+?\s/g, "").trim();
+    const editNo = text.replaceAll(/\s.*$/g, "").trim();
+    if (Number(editNo) === 0) {
+      bot.sendMessage(
+        chat,
+        "Номер дела не может быть равен нулю. Попробуй еще раз"
+      );
+      return mode;
+    }
+    if (editNo >= toDoList.length + 1) {
+      bot.sendMessage(chat, "У тебя нет столько дел в списке");
+      return mode;
+    }
+    conn.query(
+      `UPDATE tasks SET text = '${editText}' WHERE id = ${
+        toDoList[editNo - 1].id
+      }`
+    );
+    toDoList[editNo - 1].text = editText;
+    bot.sendMessage(
+      chat,
+      `Кайф, новый список дел:\n\n${displayToDos(toDoList)}`,
+      toDoBtns
+    );
+    mode[chat] = "default";
+    return mode;
+  }
+
   if (mode[chat] === "writeChatGpt") {
     if (text.trim() === "/exit") {
       bot.sendMessage(
         chat,
-        "Окей, вы больше не разговариваете с ChatGPT",
+        "Окей, ты больше не разговариваешь с ChatGPT",
         toDoBtns
       );
       mode[chat] = "default";
@@ -87,4 +116,4 @@ const onMessage = async (
   return mode;
 };
 
-export default onMessage;
+export default onText;
