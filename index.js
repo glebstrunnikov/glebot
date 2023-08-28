@@ -53,6 +53,10 @@ async function asyncConnection() {
           ],
           [{ text: "Написать ChatGPT", callback_data: "writechatgpt" }],
         ],
+        keyboard: [
+          [{ text: "test button" }, { text: "test button 2" }],
+          [{ text: "test button 3" }, { text: "test button 4" }],
+        ],
       }),
     };
 
