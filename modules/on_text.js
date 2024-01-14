@@ -1,7 +1,17 @@
-const onText = async (msg, bot, conn, mode, toDoBtns, displayToDos, openai) => {
+const onText = async (
+  msg,
+  bot,
+  conn,
+  mode,
+  toDoBtns,
+  displayToDos,
+  openai,
+  chatGptBtns
+) => {
   const text = msg.text;
   const chat = msg.chat.id;
   const userId = msg.chat.id;
+
   if (text === "/start") {
     bot.sendMessage(chat, "Privet", toDoBtns);
     mode[chat] = "default";
@@ -97,16 +107,82 @@ const onText = async (msg, bot, conn, mode, toDoBtns, displayToDos, openai) => {
         mode[chat] = "default";
         break;
       } else {
-        const chatCompletion = await openai.createChatCompletion({
-          model: "gpt-3.5-turbo",
-          messages: [{ role: "user", content: text }],
-        });
-        await bot.sendMessage(
-          chat,
-          chatCompletion.data.choices[0].message.content
-        );
+        bot.sendMessage(chat, "Сначала выбери, что ты хочешь", chatGptBtns);
         break;
       }
+    case "writeChatGptNew": {
+      if (text.trim() === "/exit") {
+        bot.sendMessage(
+          chat,
+          "Окей, ты больше не разговариваешь с ChatGPT",
+          toDoBtns
+        );
+        mode[chat] = "default";
+        break;
+      } else {
+        const chatCompletion = await openai.chat.completions.create({
+          messages: [{ role: "user", content: text }],
+          model: "gpt-3.5-turbo",
+        });
+
+        const newHistory = JSON.stringify([
+          { role: "user", content: text },
+          {
+            role: "assistant",
+            content: chatCompletion.choices[0].message.content,
+          },
+        ]);
+        await conn.query(`DELETE FROM history WHERE user_id=${chat}`);
+        const insertQuery =
+          "INSERT INTO history (user_id, history) VALUES (?, ?)";
+
+        await conn.query(insertQuery, [chat, newHistory]);
+
+        await bot.sendMessage(chat, chatCompletion.choices[0].message.content);
+        mode[chat] = "writeChatGptContinue";
+        break;
+      }
+    }
+
+    case "writeChatGptContinue": {
+      if (text.trim() === "/exit") {
+        bot.sendMessage(
+          chat,
+          "Окей, ты больше не разговариваешь с ChatGPT",
+          toDoBtns
+        );
+        mode[chat] = "default";
+        break;
+      } else {
+        let history = await conn.query(
+          `SELECT * FROM history WHERE user_id=${chat}`
+        );
+        history = JSON.parse(history[0].history);
+
+        history.push({ role: "user", content: text });
+
+        const chatCompletion = await openai.chat.completions.create({
+          messages: history,
+          model: "gpt-3.5-turbo",
+        });
+
+        history.push({
+          role: "assistant",
+          content: chatCompletion.choices[0].message.content,
+        });
+        history = JSON.stringify(history);
+
+        await conn.query(`DELETE FROM history WHERE user_id=${chat}`);
+        const insertQuery =
+          "INSERT INTO history (user_id, history) VALUES (?, ?)";
+
+        await conn.query(insertQuery, [chat, history]);
+
+        await bot.sendMessage(chat, chatCompletion.choices[0].message.content);
+        break;
+      }
+    }
+
     default:
       bot.sendMessage(chat, "Не понял");
       break;

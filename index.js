@@ -15,16 +15,11 @@ import onLocation from "./modules/on_location.js";
 const token = process.env.BOT_TOKEN;
 const weatherApiKey = process.env.WEATHER_API_KEY;
 const chatGPTKey = process.env.CHATGPT_KEY;
-const chatGPTOrg = process.env.CHATGPT_ORGANIZATION;
 
 const bot = new TelegramApi(token, { polling: true });
 
-import { Configuration, OpenAIApi } from "openai";
-const configuration = new Configuration({
-  organization: chatGPTOrg,
-  apiKey: chatGPTKey,
-});
-const openai = new OpenAIApi(configuration);
+import OpenAI from "openai";
+const openai = new OpenAI({ apiKey: chatGPTKey });
 
 async function asyncConnection() {
   try {
@@ -60,10 +55,30 @@ async function asyncConnection() {
       }),
     };
 
+    const chatGptBtns = {
+      reply_markup: JSON.stringify({
+        inline_keyboard: [
+          [
+            { text: "Начать", callback_data: "chatgptnew" },
+            { text: "Продолжить", callback_data: "chatgptcontinue" },
+          ],
+        ],
+      }),
+    };
+
     let mode = {};
 
     bot.on("text", async (msg) => {
-      mode = await onText(msg, bot, conn, mode, toDoBtns, displayToDos, openai);
+      mode = await onText(
+        msg,
+        bot,
+        conn,
+        mode,
+        toDoBtns,
+        displayToDos,
+        openai,
+        chatGptBtns
+      );
     });
 
     bot.on("callback_query", async (msg) => {
@@ -73,7 +88,8 @@ async function asyncConnection() {
         mode,
         bot,
         displayToDos,
-        toDoBtns
+        toDoBtns,
+        chatGptBtns
       );
     });
 

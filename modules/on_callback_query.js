@@ -4,7 +4,8 @@ const onCallbackQuery = async (
   mode,
   bot,
   displayToDos,
-  toDoBtns
+  toDoBtns,
+  chatGptBtns
 ) => {
   const chatId = msg.message.chat.id;
 
@@ -55,9 +56,26 @@ const onCallbackQuery = async (
   if (msg.data === "writechatgpt") {
     bot.sendMessage(
       chatId,
-      "Хорошо, напиши, о чем бы ты хотел спросить, я передам \n\nЧтобы выйти из режима диалога с ChatGPT, напиши /exit"
+      "Хочешь продолжить диалог или начать новый? \n\nЧтобы выйти из режима диалога с ChatGPT, напиши /exit",
+      chatGptBtns
     );
     mode[chatId] = "writeChatGpt";
+  }
+
+  if (msg.data === "chatgptnew") {
+    bot.sendMessage(
+      chatId,
+      "Хорошо. Пиши, что ты хочешь сообщить ChatGPT, я передам. \n\nЧтобы выйти из режима диалога с ChatGPT, напиши /exit"
+    );
+    mode[chatId] = "writeChatGptNew";
+  }
+
+  if (msg.data === "chatgptcontinue") {
+    bot.sendMessage(
+      chatId,
+      "Хорошо. Пиши, что ты хочешь сообщить ChatGPT, я передам. \n\nЧтобы выйти из режима диалога с ChatGPT, напиши /exit"
+    );
+    mode[chatId] = "writeChatGptContinue";
   }
 
   return mode;
